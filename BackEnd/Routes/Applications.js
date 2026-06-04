@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 router.post('/',(req, res) =>{
     applications.push(req.body);
     res.status(201).json({ message: 'Application submitted successfully' });
-    applications: req.body 
+    
 
 
 })
