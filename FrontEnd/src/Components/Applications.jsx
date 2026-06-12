@@ -27,7 +27,7 @@ export default function Applications() {
   })
     .then(response => response.json())
     .then(data => {
-      console.log('Success:', data);
+      console.log('Success:', 'k' );
       // Clear form fields after successful submission
       setName('');
       setEmail('');
