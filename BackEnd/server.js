@@ -1,15 +1,20 @@
 require('dotenv').config();
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const express = require('express');
 const cors = require("cors");
 const app = express();
 app.use(express.json());
 const port = 5000;
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+  })
+);
+app.use(helmet());
 
 
 
-const applications = []
 
 app.get("/", (req, res) => {
     res.status(200).json({ message: 'API is alive ' });
@@ -25,11 +30,11 @@ app.use('/applications', applicationsRouter);
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB Connected');
+
+    app.listen(port, () => {
+      console.log('Server is running on port 5000');
+    });
   })
   .catch((err) => {
     console.log(err);
   });
-
-app.listen(port, () => {
-    console.log('Server is running on port 5000');
-});
