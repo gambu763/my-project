@@ -1,5 +1,6 @@
 import react from 'react'
 import { useState } from 'react';
+import axios from "axios";
 
 export default function Applications() {
     const [name, setName] = useState('');
@@ -9,39 +10,53 @@ export default function Applications() {
     const [propertyDescription, setPropertyDescription] = useState("");
     const [streetAddress, setStreetAddress] = useState("");
     const [currentZoning, setCurrentZoning] = useState("");
-    const handleSubmit = () => {
-  fetch('http://localhost:5000/applications', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      name,
-      email,
-      phone,
-      applicationType,
-      currentZoning,
-      propertyDescription,
-      streetAddress
-    })
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Success:', 'k' );
-      // Clear form fields after successful submission
-      setName('');
-      setEmail('');
-      setPhone('');
-      setApplicationType('');
-      setCurrentZoning('');
-      setPropertyDescription('');
-      setStreetAddress('');
+    const [sitePlan, setSitePlan] = useState(null);
+    const [gisAerial, setGisAerial] = useState(null);
+    const [supportingDocument, setSupportingDocument] =  useState(null);
+      const [message, setMessage] = useState("");
+   const handleSubmit = async () => {
+    setMessage("");
+  try {
+    const formData = new FormData();
 
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("applicationType", applicationType);
+    formData.append("currentZoning", currentZoning);
+    formData.append("propertyDescription", propertyDescription);
+    formData.append("streetAddress", streetAddress);
 
+    formData.append("sitePlan", sitePlan);
+    formData.append("gisAerial", gisAerial);
+    formData.append("supportingDocument", supportingDocument);
+
+    const response = await axios.post(
+      "http://localhost:5000/applications",
+      formData
+    );
+
+    console.log("Success:", response.data);
+    setMessage("Application submitted successfully");
+    setName("");
+    setEmail("");
+    setPhone("");
+    setApplicationType("");
+    setCurrentZoning("");
+    setPropertyDescription("");
+    setStreetAddress("");
+
+    setSitePlan(null);
+    setGisAerial(null);
+    setSupportingDocument(null);
+
+  } catch (error) {
+    console.error("Error:", error);
+setMessage(
+  error.response?.data?.message ||
+  "Something went wrong"
+);
+  }
 };
 
     return (
@@ -122,6 +137,37 @@ export default function Applications() {
   rows="4"
   cols="50"
 />
+<label>Site Plan</label>
+
+<input
+  type="file"
+  onChange={(e) =>
+    setSitePlan(e.target.files[0])
+  }
+/>
+
+<br />
+
+<label>GIS Aerial Picture</label>
+
+<input
+  type="file"
+  onChange={(e) =>
+    setGisAerial(e.target.files[0])
+  }
+/>
+
+<br />
+
+<label>Supporting Document</label>
+
+<input
+  type="file"
+  onChange={(e) =>
+    setSupportingDocument(e.target.files[0])
+  }
+/>
+{message && <p>{message}</p>}
 <button onClick={handleSubmit}>
   Submit
 </button>
@@ -138,4 +184,5 @@ export default function Applications() {
 
         
     )
-}
+
+  }
