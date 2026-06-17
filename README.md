@@ -111,3 +111,8 @@ Outcome
 
 The backend is successfully connected to MongoDB Atlas and ready to store application data permanently.
 
+Implemented a document upload system that allows applicants to submit supporting files alongside their application. The system accepts Site Plans, GIS Aerial Images, and Supporting Documents, storing uploaded files on the server while saving file references in MongoDB. This ensures that all required application documentation is linked to the corresponding application record and can be accessed by administrators during the review process.
+
+Feature 6.1: Secure File Upload Validation
+
+Enhanced the document upload system with security and validation measures. The platform restricts uploads to approved file formats (PDF, JPG, JPEG, and PNG), enforces file size limits, validates required documents before submission, and blocks unsupported file types. These measures help protect the application from malicious uploads while maintaining data quality and consistency.
