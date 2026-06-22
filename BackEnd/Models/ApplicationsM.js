@@ -53,6 +53,16 @@ gisAerial: {
 supportingDocument: {
   type: String,
 },
+status: {
+  type: String,
+  enum: [
+    "Pending",
+    "Under Review",
+    "Approved",
+    "Rejected"
+  ],
+  default: "Pending"
+},
   },
   {
     timestamps: true,

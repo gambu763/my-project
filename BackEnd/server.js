@@ -5,6 +5,7 @@ const express = require('express');
 const cors = require("cors");
 const app = express();
 const path = require("path");
+
 app.use(express.json());
 const port = 5000;
 app.use(
@@ -24,6 +25,10 @@ app.get('/Health', (req, res) => {
 
 const applicationsRouter = require('./Routes/Applications');
 app.use('/applications', applicationsRouter);
+
+const pdfRouter = require("./Routes/Pdf");
+app.use("/Pdf", pdfRouter);
+
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
