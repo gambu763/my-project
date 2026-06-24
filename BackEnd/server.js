@@ -5,14 +5,20 @@ const express = require('express');
 const cors = require("cors");
 const app = express();
 const path = require("path");
-
 app.use(express.json());
-const port = 5000;
+const authRouter = require("./Routes/Auth");
+
 app.use(
   cors({
     origin: 'http://localhost:5173',
   })
 );
+
+app.use("/auth", authRouter);
+
+
+const port = 5000;
+
 app.use(helmet());
 
 app.get("/", (req, res) => {

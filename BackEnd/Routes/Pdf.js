@@ -1,13 +1,14 @@
 const express = require("express");
 const PDFDocument = require("pdfkit");
 const Application = require("../Models/ApplicationsM");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
 const safeValue = (value) => {
   return value ? value : "Not Provided";
 };
-router.get("/:id", async (req, res) => {
+router.get("/:id", auth, async (req, res) => {
   try {
     const application = await Application.findById(
       req.params.id

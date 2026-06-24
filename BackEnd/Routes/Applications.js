@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const upload = require("../middleware/upload");
 const Application = require('../Models/ApplicationsM');
+const auth = require("../middleware/auth");
 
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     const applications = await Application.find();
     res.status(200).json(applications);
@@ -15,7 +16,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.put("/:id/status", async (req, res) => {
+router.put("/:id/status", auth, async (req, res) => {
   try {
     const validStatuses = [
   "Pending",

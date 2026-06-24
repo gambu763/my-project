@@ -1,34 +1,95 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+
 export default function Admin() {
+    const handleLogout = () => {
+  localStorage.removeItem("token");
+  window.location.href =
+    "/admin/login";
+};
+   
     const [applications, setApplications] = useState([]);
 
-    const fetchApplications = () => {
-        fetch('http://localhost:5000/applications')
-            .then(response => response.json())
-            .then(data => setApplications(data))
-            .catch(error => console.error('Error fetching applications:', error));
-    };
+    const fetchApplications = async () => {
+  try {
+    const token =
+      localStorage.getItem("token");
+
+      if (!token) {
+  return null;
+}
+
+    const response = await fetch(
+      "http://localhost:5000/applications",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    setApplications(data);
+
+  } catch (error) {
+    console.error(
+      "Error fetching applications:",
+      error
+    );
+  }
+};
 
     useEffect(() => {
         fetchApplications();
     }, []);
 
     const updateStatus = async (id, status) => {
-        try {
-            await axios.put(
-                `http://localhost:5000/applications/${id}/status`,
-                { status }
-            );
-            fetchApplications();
-        } catch (error) {
-            console.error(error);
-        }
-    };
+  try {
+    const token = localStorage.getItem("token");
+
+    await axios.put(
+      `http://localhost:5000/applications/${id}/status`,
+      { status },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    fetchApplications();
+
+  } catch (error) {
+    console.error(error);
+  }
+};
+const downloadPdf = async (id) => {
+  const token = localStorage.getItem("token");
+
+  const response = await fetch(
+    `http://localhost:5000/pdf/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const blob = await response.blob();
+
+  const url = window.URL.createObjectURL(blob);
+
+  window.open(url);
+};
 
     return (
         <div>
+            <button onClick={handleLogout}>
+                     Logout
+            </button>
+           
             <h2>Admin Dashboard</h2>
             <table>
                 <thead>
@@ -66,13 +127,13 @@ export default function Admin() {
                                 </select>
                             </td>
                             <td>
-                                <a
-                                    href={`http://localhost:5000/pdf/${app._id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
+                                <td>
+    <button 
+                                      onClick={() => downloadPdf(app._id)}
+                                 >
                                     Download PDF
-                                </a>
+                                 </button>
+                                </td>
                             </td>
                         </tr>
                     ))}
